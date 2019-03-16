@@ -1,0 +1,68 @@
+# https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
+swagger: '2.0'
+info:
+    description: Test
+    version: 1.0.0
+    title: Test
+    termsOfService: ''
+    contact:
+        email: vothanhkiet@gmail.com
+host: vothanhkiet.github.io
+basePath: /api/v1
+tags: []
+schemes:
+    - http
+    - https
+consumes:
+    - application/json
+produces:
+    - application/json
+paths:
+    /simulator:
+        post:
+            x-swagger-router-controller: simulator
+            operationId: noop
+            description: No Operation
+            parameters:
+                -
+                    description: 'Sample object'
+                    in: body
+                    name: body
+                    required: true
+                    schema:
+                        $ref: '#/definitions/Sample'
+            responses:
+                '200':
+                    description: Pong
+                    schema:
+                        type: object
+                        items:
+                            $ref: '#/definitions/Sample'
+securityDefinitions:
+    Bearer:
+        type: apiKey
+        name: Authorization
+        description: Access token
+        in: header
+definitions:
+    Sample:
+        type: object
+        required:
+            - code
+            - message
+        properties:
+            code:
+                type: integer
+                format: int32
+                description: Error's code
+                minimum: 0
+                maximum: 100
+            type:
+                type: string
+                description: Error's type
+                minLength: 1
+                maxLength: 3
+            message:
+                type: string
+                description: Error's message
+                pattern: ^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$
