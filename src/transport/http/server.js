@@ -22,7 +22,7 @@ class Server {
      */
     constructor(opts = {}) {
         const defaultOpts = {
-            port: 3000
+            port: 3000,
         };
         this.opts = defaultsDeep(opts, defaultOpts);
         this.app = express();
@@ -34,15 +34,15 @@ class Server {
         this.logger = logger;
         this.swaggerOpts = {
             controllers: path.join(__dirname, "routes/v1"), // "./routes/v1",
-            useStubs: false
+            useStubs: false,
         };
         this.swaggerDoc = {
             swagger: "2.0",
             paths: {},
             info: {
                 version: "1.0.0",
-                title: "swagger"
-            }
+                title: "swagger",
+            },
         };
     }
 
@@ -78,7 +78,7 @@ class Server {
                     } catch (err) {
                         return callback(err);
                     }
-                }
+                },
             })
         );
         // Validate Swagger requests
@@ -88,12 +88,14 @@ class Server {
         // Route validated requests to appropriate controller
         this.app.use(swaggerMiddleWare(this.swaggerDoc, this.swaggerOpts));
         // Serve the Swagger documents and Swagger UI
-        this.app.use(
-            middleware.swaggerUi({
-                swaggerUi: "/api/docs",
-                apiDocs: "/api/docs/swagger.json"
-            })
-        );
+        if (process.env.NODE_ENV !== "production") {
+            this.app.use(
+                middleware.swaggerUi({
+                    swaggerUi: "/api/docs",
+                    apiDocs: "/api/docs/swagger.json",
+                })
+            );
+        }
         this.app.use((req, res, next) => {
             next(new Error("Not Found"));
         });
@@ -128,5 +130,5 @@ class Server {
 }
 
 module.exports = {
-    Server: Server
+    Server: Server,
 };
